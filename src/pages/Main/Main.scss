@@ -1,0 +1,45 @@
+.main {
+        width: 100vw;
+        overflow: scroll;
+        display: flex;
+        flex-direction: column;
+    
+    &_img {
+        width: 20%;
+        display: flex;
+        margin: 33px auto;
+        object-fit: contain;
+    }
+
+    &_title {
+        width: 20%;
+        display: flex;
+        margin: 33px auto;
+        justify-content: center;
+        font-size: 29px;
+    }
+
+    &_genButton, &_csvButton {
+        width: 70%;
+        border: none;
+        margin: 9px auto;
+        background-color: rgb(255, 222, 222);
+        height: 25px;
+        &:hover {
+            cursor: pointer;
+            background-color: rgb(190, 255, 233);
+        }
+    }
+
+    &_loader {
+
+        &--displayOn {
+            display: flex;
+            z-index: 2;
+        }
+
+        &--displayOff {
+            display: none;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+@import '../../utils/mixins';
+
+.form {
+
+    display: flex;
+    flex-direction: row;
+    margin: 33px auto;
+    width: 70%;
+    justify-content: space-between;
+    column-gap: 30px;
+
+    &_field {
+        width: 20%;
+        display: flex;
+        flex-direction: column;
+
+        label {
+            margin-bottom: 15px;
+        }
+
+        input, select{
+            border: none;
+            background-color: $colorSecond;
+            height: 25px;
+            &:hover {
+                cursor: pointer;
+                background-color: $colorFirst;
+            }
+        }
+    }
+}

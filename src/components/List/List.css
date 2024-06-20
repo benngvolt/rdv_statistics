@@ -1,0 +1,24 @@
+.salesList {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: scroll;
+  margin: 45px auto;
+  list-style-type: none;
+}
+.salesList_item {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  -moz-column-gap: 30px;
+       column-gap: 30px;
+  flex-direction: row;
+}
+.salesList_item--bold {
+  font-weight: bold;
+}
+.salesList_item p {
+  font-size: 12px;
+  width: 8%;
+}/*# sourceMappingURL=List.css.map */
