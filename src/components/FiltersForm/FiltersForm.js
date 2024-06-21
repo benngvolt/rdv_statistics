@@ -76,7 +76,7 @@ function FiltersForm ({
                         value={brandSelected}
                         onChange={(e) => setBrandSelected(e.target.value)}>
                     <option value="TOUTES LES MARQUES">TOUTES LES MARQUES</option>
-                    {brands?.map((brand, index)=>(
+                    {brands?.sort((a, b) => a.brand_name.localeCompare(b.brand_name)).map((brand, index)=>(
                     <option key={brand + index} value={brand.brand_name}>{brand.brand_name}</option>
                     ))}
                 </select>

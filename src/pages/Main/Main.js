@@ -12,12 +12,20 @@ function Main () {
 
   const [collectionTagSelected, setCollectionTagSelected] = useState('TOUTES LES SAISONS');
   const [brandSelected, setBrandSelected] = useState('TOUTES LES MARQUES');
-  const [storeSelected, setStoreSelected] = useState(0);
+  const [storeSelected, setStoreSelected] = useState(1);
   const [startDateSelected, setStartDateSelected] = useState('');
   const [endDateSelected, setEndDateSelected] = useState('');
   const [categorySelected, setCategorySelected] = useState('TOUTES LES CATEGORIES');
   const [collectionTags, setCollectionTags] = useState([]);
   const [stores, setStores] = useState ([]);
+
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [totalTtcPrice, setTotalTtcPrice] = useState(0);
+  const [totalHtPrice, setTotalHtPrice] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
+  const [totalSupplyPrice, setTotalSupplyPrice] = useState(0);
+  const [totalMarge, setTotalMarge] = useState(0);
+  const [totalMargePercent, setTotalMargePercent] = useState(0)
 
   const [filteredSalesList, setFilteredSalesList] = useState([]);
 
@@ -40,11 +48,13 @@ function Main () {
     setStores (storesList)
   }, []);
 
+  useEffect(() => {
+    calcTotals();
+  }, [filteredSalesList]);
+
   /* -----------------------------------------------------
   1È ÉTAPE :: RÉCUPÉRATION DES VENTES POUR PLUSIEURS JOURS
   ----------------------------------------------------- */
-
-  let datedSalesList = [];
 
   // RÉCUPÉRATION DES VENTES POUR UNE JOURNÉE DONNÉE
   async function getSalesByDate(year, month, day, store_id) {
@@ -97,14 +107,15 @@ function Main () {
 
   async function generateDatedList() {
     try {
+      
       const sales = await getAllSales(startDate, endDate, store_id);
   
       const filteredSales = await Promise.all(
         sales
           .filter(sale => sale.product_price !== '0.00')
           .map(async sale => {
-            const taxeValue = parseFloat(sale.product_price) * parseFloat(sale.vat);
-            const htPrice = parseFloat(sale.product_price) - taxeValue;
+            
+            const htPrice = parseFloat(sale.product_price) / (1 + parseFloat(sale.vat));
             const roundedHtPrice = htPrice.toFixed(2);
             const saleTag = await getTagsProducts(sale.product_id);
             
@@ -124,13 +135,22 @@ function Main () {
             const category = await categories?.find(category => category.category_id === product.product_category);
             const categoryName = category ? category.category_name : ''
 
+            const supplyPrice = parseFloat(product.product_supply_price);
+            console.log(product);
+
+            const marge = (roundedHtPrice - supplyPrice).toFixed(2);
+            const margePercent = ((marge/supplyPrice)*100).toFixed(0)
+
             return {
               ...sale,
               product_htPrice: roundedHtPrice,
               product_tag: saleTagName,
               store_name: storeName,
               product_brand: brandName,
-              product_category: categoryName
+              product_category: categoryName,
+              product_supply_priceHt: supplyPrice,
+              marge: marge,
+              margePercent: margePercent
             };
           })
       );
@@ -143,7 +163,6 @@ function Main () {
             return tagCondition && brandCondition && categoriesCondition;
           })
       setFilteredSalesList(datedFilteredSales);
-
     } catch (error) {
 
       console.error('Erreur lors de la récupération des ventes :', error);
@@ -200,10 +219,7 @@ function Main () {
     }
   }
 
-  async function generateFilteredSalesList() {
-    await generateDatedList();
-  }
-
+  
   /* TÉLÉCHARGEMENT D'UN FICHIER CSV */
 
   function jsonToCsv(jsonData) {
@@ -247,6 +263,61 @@ function Main () {
     }
   }
 
+  async function calcTotals () {
+    const quantityAdded = filteredSalesList.reduce((total, item) => {
+      return total + item.quantity;
+    }, 0);
+
+    const ttcPriceAdded = filteredSalesList.reduce((total, item) => {
+      return total + parseFloat(item.product_price);
+    }, 0);
+
+    const htPriceAdded = filteredSalesList.reduce((total, item) => {
+      return total + parseFloat(item.product_htPrice);
+    }, 0);
+
+    const discountAdded = filteredSalesList.reduce((total, item) => {
+      return total + parseFloat(item.discount);
+    }, 0);
+
+    const margeAdded = filteredSalesList.reduce((total, item) => {
+      return total + parseFloat(item.marge);
+    }, 0);
+
+    const supplyPriceAdded = filteredSalesList.reduce((total, item) => {
+      return total + parseFloat(item.product_supply_priceHt);
+    }, 0);
+
+    const margePercentTotal = ((margeAdded/supplyPriceAdded)*100)
+
+    setTotalQuantity(quantityAdded);
+    setTotalTtcPrice(ttcPriceAdded);
+    setTotalHtPrice(htPriceAdded);
+    setTotalDiscount(discountAdded);
+    setTotalMarge(margeAdded);
+    setTotalMargePercent(margePercentTotal);
+    setTotalSupplyPrice(supplyPriceAdded);
+  }
+
+  async function resetFields() {
+    setTotalQuantity(0)
+    setTotalHtPrice(0)
+    setTotalTtcPrice(0)
+    setTotalDiscount(0)
+    setTotalMarge(0)
+    setTotalMargePercent(0);
+    setTotalSupplyPrice(0);
+    setFilteredSalesList([]);
+  }
+
+  async function generateFilteredSalesList() {
+    setLoaderDisplay(true);
+    await resetFields();
+    await generateDatedList();
+    setLoaderDisplay(false);
+  }
+
+
   return (
       <main className='main'>
         <img className='main_img' src={logo}/>
@@ -270,13 +341,27 @@ function Main () {
         <button className='main_csvButton' type='button' onClick={handleDownloadCsv}>.CSV</button>
         }
         { filteredSalesList && filteredSalesList.length > 0 &&
+          <p className='main_totalResults'>QUANTITÉ TOTALE : <strong className='main_totalResults--strong'>{totalQuantity}</strong> <br/>
+          CA TOTAL TTC: <strong>{totalTtcPrice.toFixed(0)} </strong> <br/>
+          CA TOTAL HT: <strong>{totalHtPrice.toFixed(0)} </strong> <br/>
+          PRIX D'ACHAT TOTAL HT: <strong>{totalSupplyPrice.toFixed(0)} </strong> <br/>
+          TOTAL REMISES: <strong>{totalDiscount.toFixed(0)} </strong> <br/>
+          MARGE TOTALE: <strong>{totalMarge.toFixed(0)} </strong> <br/>
+          MARGE TOTALE EN %: <strong>{totalMargePercent.toFixed(0)}% </strong>
+          </p>
+        }   
+        { filteredSalesList && filteredSalesList.length > 0 &&
         <List
             salesList = {filteredSalesList}/>
+        }
+        { !filteredSalesList || filteredSalesList.length === 0 &&
+          <p className='main_alertText'>Aucune vente ne correspond à cette recherche</p>
         }
         <Loader 
           loaderDisplay={loaderDisplay} 
           className='loader--translucent'
         />
+
       </main>
   )
 }

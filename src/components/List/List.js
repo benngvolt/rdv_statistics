@@ -43,9 +43,6 @@ function List ({
             setIsSaleDescending(true);
         } 
     }
-    function sortQuantity() {
-
-    }
    
     function sortPriceTtc() {
         if (isSaleDescending){
@@ -102,8 +99,12 @@ function List ({
                 <p type='button' onClick={() => sortDate()}>DATE</p>
                 <p type='button' onClick={() => sortProductId()}>ID PRODUIT</p>
                 <p>QUANTITÉ</p>
+                <p>PRIX D'ACHAT HT</p>
                 <p type='button' onClick={() => sortPriceTtc()}>PRIX DE VENTE TTC</p>
                 <p type='button' onClick={() => sortPriceHt()}>PRIX DE VENTE HT</p>
+                <p>REMISE</p>
+                <p>MARGE</p>
+                <p>MARGE EN %</p>
                 <p type='button' onClick={() => sortTag()}>COLLECTION</p>
                 <p>BOUTIQUE</p>
                 <p type='button' onClick={() => sortBrand()}>MARQUE</p>
@@ -115,12 +116,17 @@ function List ({
                 <p>{sale.sale_date}</p>
                 <p>{sale.product_id}</p>
                 <p>{sale.quantity}</p>
+                <p>{sale.product_supply_priceHt}</p>
                 <p>{sale.product_price}</p>
                 <p>{sale.product_htPrice}</p>
+                <p>{sale.discount}</p>
+                <p>{sale.marge}</p>
+                <p>{sale.margePercent}%</p>
                 <p>{sale.product_tag}</p>
                 <p>{sale.store_name}</p>
                 <p>{sale.product_brand}</p>
                 <p>{sale.product_category}</p>
+
             </li>
           )}
         </ul>
