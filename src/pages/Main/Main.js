@@ -77,30 +77,28 @@ function Main () {
   }
 
   // RÉCUPÉRATION DES VENTES POUR UNE PLUSIEURS DATES
-  
   async function getAllSales(startDate, endDate, store_id) {
-    
     let salesList = [];
-    
     let currentDate = new Date(startDate);
-    let year = currentDate.getFullYear();
-    let month = currentDate.getMonth() + 1; // Les mois commencent à 0 dans JavaScript
-    let day = currentDate.getDate();
-    
     const end = new Date(endDate);
-    
+
     while (currentDate <= end) {
-      
+      let year = currentDate.getFullYear();
+      let month = currentDate.getMonth() + 1; // Les mois commencent à 0 dans JavaScript
+      let day = currentDate.getDate();
+
       const sales = await getSalesByDate(year, month, day, store_id);
       if (sales) {
-        salesList.push(...sales);
-         // Ajouter les ventes récupérées à la liste
+        salesList.push(...sales); // Ajouter les ventes récupérées à la liste
       }
-
-      currentDate.setDate(currentDate.getDate() + 1);
+      currentDate.setDate(currentDate.getDate() + 1); // Passer au jour suivant
     }
+
     return salesList;
   }
+
+  
+
 
   // Exemple d'utilisation:
   const startDate = new Date(startDateSelected); // mois en JavaScript commence à 0 (0 = janvier)
@@ -138,13 +136,8 @@ function Main () {
             const categoryName = category ? category.category_name : '';
             const parentCategory = category.category_id_parent;
             const parentNameCategory = categoryParentNames.find(item => item.id === parentCategory) || '';
-            console.log(parentNameCategory);
             const parentName = parentNameCategory.name;
-
-
-
             const supplyPrice = parseFloat(product.product_supply_price);
-
             const marge = (roundedHtPrice - supplyPrice).toFixed(2);
             const margePercent = ((marge/supplyPrice)*100).toFixed(0);
 
@@ -175,6 +168,7 @@ function Main () {
           })
 
       setFilteredSalesList(datedFilteredSales);
+      console.log(datedFilteredSales.length)
     } catch (error) {
 
       console.error('Erreur lors de la récupération des ventes :', error);
