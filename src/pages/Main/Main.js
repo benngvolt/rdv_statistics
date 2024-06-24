@@ -114,13 +114,13 @@ function Main () {
         sales
           .filter(sale => sale.product_price !== '0.00')
           .map(async sale => {
-            
+            await new Promise(resolve => setTimeout(resolve, 500));
             const htPrice = parseFloat(sale.product_price) / (1 + parseFloat(sale.vat));
             const roundedHtPrice = htPrice.toFixed(2);
             const saleTag = await getTagsProducts(sale.product_id);
             
             // Utilisation de find pour obtenir le tag correspondant
-            const collectionTag = collectionTags.find(tag => tag.tag_id === saleTag[0]?.tag_id);
+            const collectionTag = collectionTags.find(tag => tag.tag_id === saleTag[0]?.tag_id) || '';
             const saleTagName = collectionTag ? collectionTag.tag : '';
 
             // Utilisation de find pour obtenir le store correspondant
@@ -129,15 +129,15 @@ function Main () {
 
             // Utilisation de find pour obtenir le produit correspondant puis la marque et la catégorie
             const product = await products?.find(product => product.product_id === sale.product_id);
-            const brand = await brands?.find(brand => brand.brand_id === product.product_brand);
-            const brandName = brand ? brand.brand_name : '';
+            const brand = await brands?.find(brand => brand.brand_id === product?.product_brand) || '';
+            const brandName = brand.brand_name ? brand.brand_name : '';
             
-            const category = await categories?.find(category => category.category_id === product.product_category);
+            const category = await categories?.find(category => category.category_id === product?.product_category) || '';
             const categoryName = category ? category.category_name : '';
-            const parentCategory = category.category_id_parent;
-            const parentNameCategory = categoryParentNames.find(item => item.id === parentCategory) || '';
-            const parentName = parentNameCategory.name;
-            const supplyPrice = parseFloat(product.product_supply_price);
+            const parentCategory = category ?.category_id_parent || '';
+            const parentNameCategory = categoryParentNames?.find(item => item.id === parentCategory) || '';
+            const parentName = parentNameCategory?.name || '';
+            const supplyPrice = parseFloat(product?.product_supply_price) || 0;
             const marge = (roundedHtPrice - supplyPrice).toFixed(2);
             const margePercent = ((marge/supplyPrice)*100).toFixed(0);
 
@@ -225,7 +225,6 @@ function Main () {
     }
   }
 
-  
   /* TÉLÉCHARGEMENT D'UN FICHIER CSV */
 
   function jsonToCsv(jsonData) {
