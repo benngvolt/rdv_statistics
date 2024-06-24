@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/rdv_statistics/static/css/main.16d35336.css",
+    "main.js": "/rdv_statistics/static/js/main.93af0c95.js",
+    "static/js/453.8ab44547.chunk.js": "/rdv_statistics/static/js/453.8ab44547.chunk.js",
+    "static/media/logo.png": "/rdv_statistics/static/media/logo.8c1115e699a8c4299ffd.png",
+    "index.html": "/rdv_statistics/index.html",
+    "main.16d35336.css.map": "/rdv_statistics/static/css/main.16d35336.css.map",
+    "main.93af0c95.js.map": "/rdv_statistics/static/js/main.93af0c95.js.map",
+    "453.8ab44547.chunk.js.map": "/rdv_statistics/static/js/453.8ab44547.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.16d35336.css",
+    "static/js/main.93af0c95.js"
+  ]
+}
