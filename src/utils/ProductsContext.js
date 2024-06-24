@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { API_URL, USERNAME, PASSWORD  } from './constants';
 
 export const ProductsContext = createContext();
 
@@ -8,10 +7,15 @@ export const ProductsProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [brands, setBrands] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [userName, setUserName] = useState ('');
+    const [passWord, setPassWord] = useState ('');
+    const [apiUrl, setApiUrl] = useState ('');
+    const [textError, setTextError] = useState (false)
 
     const [loaderDisplay, setLoaderDisplay] = useState(false);
+    const [authModalDisplay, setAuthModalDisplay] = useState(true)
  
-    const credentials = btoa(`${USERNAME}:${PASSWORD}`);
+    const credentials = btoa(`${userName}:${passWord}`);
 
     /*REQUÊTE PRODUITS*/
     
@@ -21,8 +25,9 @@ export const ProductsProvider = ({ children }) => {
         let hasMorePages = true;
         while (hasMorePages) {
             setLoaderDisplay(true);
+            setAuthModalDisplay(false);
             try {
-                const response = await fetch(`${API_URL}/products?p=${currentPage}`, {
+                const response = await fetch(`${apiUrl}/products?p=${currentPage}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Basic ${credentials}`,
@@ -31,6 +36,9 @@ export const ProductsProvider = ({ children }) => {
                 });
 
                 if (!response.ok) {
+                    setAuthModalDisplay(true)
+                    setLoaderDisplay(false);
+                    setTextError(true);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
@@ -42,11 +50,16 @@ export const ProductsProvider = ({ children }) => {
                     console.log(`Products page: ${currentPage - 1}`);
                 } else {
                     hasMorePages = false;
+                    setTextError(false);
                     setLoaderDisplay(false);
+                    setAuthModalDisplay(false)
                 }
             } catch (error) {
                 console.log(`Error fetching page ${currentPage}:`, error.message);
                 hasMorePages = false;
+                setAuthModalDisplay(true)
+                setLoaderDisplay(false);
+                setTextError(true);
             }
         }
         return allProducts;
@@ -62,7 +75,7 @@ export const ProductsProvider = ({ children }) => {
         while (hasMorePages) {
             setLoaderDisplay(true);
             try {
-                const response = await fetch(`${API_URL}/brands?p=${currentPage}`, {
+                const response = await fetch(`${apiUrl}/brands?p=${currentPage}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Basic ${credentials}`,
@@ -71,6 +84,9 @@ export const ProductsProvider = ({ children }) => {
                 });
 
                 if (!response.ok) {
+                    setAuthModalDisplay(true)
+                    setLoaderDisplay(false);
+                    setTextError(true);
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
@@ -82,11 +98,16 @@ export const ProductsProvider = ({ children }) => {
                     console.log(`Brands page: ${currentPage - 1}`);
                 } else {
                     hasMorePages = false;
+                    setTextError(false);
                     setLoaderDisplay(false);
+                    setAuthModalDisplay(false)
                 }
             } catch (error) {
                 console.log(`Error fetching page ${currentPage}:`, error.message);
                 hasMorePages = false;
+                setAuthModalDisplay(true)
+                setLoaderDisplay(false);
+                setTextError(true);
             }
         }
         return allBrands;
@@ -102,7 +123,7 @@ export const ProductsProvider = ({ children }) => {
         while (hasMorePages) {
             setLoaderDisplay(true);
             try {
-                const response = await fetch(`${API_URL}/categories?p=${currentPage}`, {
+                const response = await fetch(`${apiUrl}/categories?p=${currentPage}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Basic ${credentials}`,
@@ -111,7 +132,11 @@ export const ProductsProvider = ({ children }) => {
                 });
 
                 if (!response.ok) {
+                    setAuthModalDisplay(true)
+                    setLoaderDisplay(false);
+                    setTextError(true);
                     throw new Error(`HTTP error! status: ${response.status}`);
+                    
                 }
 
                 const data = await response.json();
@@ -122,33 +147,35 @@ export const ProductsProvider = ({ children }) => {
                     console.log(`Categories page: ${currentPage - 1}`);
                 } else {
                     hasMorePages = false;
+                    setTextError(false);
                     setLoaderDisplay(false);
+                    setAuthModalDisplay(false)
                 }
             } catch (error) {
                 console.log(`Error fetching page ${currentPage}:`, error.message);
                 hasMorePages = false;
+                setAuthModalDisplay(true)
+                setLoaderDisplay(false);
+                setTextError(true);
             }
         }
         return allCategories;
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const allProducts = await fetchAllProducts();
-                const allBrands = await fetchAllBrands();
-                const allCategories = await fetchAllCategories();
-                setProducts(allProducts);
-                setBrands(allBrands);
-                setCategories(allCategories);
-            } catch (error) {
-                console.log(error.message);
-            }
-        };
-        fetchData();
-    }, []); // Add loadProducts as a dependency to re-fetch when it changes
-
-    
+    const fetchData = async () => {
+        try {
+            const allProducts = await fetchAllProducts();
+            const allBrands = await fetchAllBrands();
+            const allCategories = await fetchAllCategories();
+            setProducts(allProducts);
+            setBrands(allBrands);
+            setCategories(allCategories);
+        } catch (error) {
+            console.log(error.message);
+            setAuthModalDisplay(true)
+            setLoaderDisplay(false);
+        }
+    };
 
     return (
         <ProductsContext.Provider value={{ 
@@ -159,7 +186,18 @@ export const ProductsProvider = ({ children }) => {
             categories,
             setCategories,
             loaderDisplay, 
-            setLoaderDisplay
+            setLoaderDisplay,
+            userName,
+            setUserName,
+            passWord,
+            setPassWord,
+            credentials,
+            apiUrl,
+            setApiUrl, 
+            fetchData,
+            authModalDisplay, 
+            setAuthModalDisplay,
+            textError
         }}>
             {children}
         </ProductsContext.Provider>

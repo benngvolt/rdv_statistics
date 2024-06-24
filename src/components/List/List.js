@@ -1,8 +1,6 @@
 import './List.scss'
 import {useRef, useState, useEffect, useContext } from 'react'
 
-// import HomePage from '../../components/HomePage/HomePage'
-
 function List ({
     salesList}) 
     {
@@ -10,7 +8,6 @@ function List ({
     const [sortedList, setSortedList] = useState(salesList)
     const [isSaleDescending, setIsSaleDescending] = useState(false)
  
-    // function handleSortSaleId
 
     async function sortSaleId() {
         if (isSaleDescending){
@@ -104,10 +101,11 @@ function List ({
                 <p type='button' onClick={() => sortPriceHt()}>PRIX DE VENTE HT</p>
                 <p>REMISE</p>
                 <p>MARGE</p>
-                <p>MARGE EN %</p>
+                <p>MARGE %</p>
                 <p type='button' onClick={() => sortTag()}>COLLECTION</p>
                 <p>BOUTIQUE</p>
                 <p type='button' onClick={() => sortBrand()}>MARQUE</p>
+                <p>CATEGORIE PARENTE</p>
                 <p type='button' onClick={() => sortCategory()}>CATEGORIE</p>
             </li>
           {sortedList?.map((sale) => 
@@ -125,6 +123,7 @@ function List ({
                 <p>{sale.product_tag}</p>
                 <p>{sale.store_name}</p>
                 <p>{sale.product_brand}</p>
+                <p>{sale.product_category_name_parent}</p>
                 <p>{sale.product_category}</p>
 
             </li>

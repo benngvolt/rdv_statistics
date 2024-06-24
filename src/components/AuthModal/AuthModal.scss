@@ -1,0 +1,32 @@
+@import '../../utils/mixins';
+
+.authModal {
+    &_img {
+        width: 300px;
+    }
+
+    &_title {
+        margin: 0 auto 50px auto;
+    }
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 9px;
+    &_field {
+        width: 300px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        column-gap: 15px;
+        margin: auto;
+        label {
+            font-size: 17px;
+            width: 75px;
+            color: black;
+        }
+        input {
+            width: 180px;
+            border: none;
+        }
+    }
+}

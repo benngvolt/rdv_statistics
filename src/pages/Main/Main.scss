@@ -1,8 +1,47 @@
+@import '../../utils/mixins';
+
 .main {
         width: 100vw;
         overflow: scroll;
         display: flex;
         flex-direction: column;
+
+    &_authModal {
+        
+        position: fixed;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        background: $colorSecond;
+        flex-direction: column;
+
+        &--displayOn {
+            display: flex;
+        }
+        &--displayOff {
+            display: none;
+        }
+
+        &_button {
+            height: 25px;
+            width: 300px;
+            margin-top: 15px;
+            background-color: white;
+            
+            border: none;
+        }
+
+        &_textError {
+            margin: 15px auto 0 auto;
+            color: grey;
+            animation: appear 1s ease forwards;
+
+        }
+    }
     
     &_img {
         width: 20%;
@@ -20,7 +59,7 @@
     }
 
     &_genButton, &_csvButton {
-        width: 70%;
+        width: $mainWidth;
         border: none;
         margin: 9px auto;
         background-color: rgb(255, 222, 222);
@@ -50,14 +89,10 @@
 
     &_totalResults {
         margin: 54px auto 0px auto;
-        width: 70%;
+        width: $mainWidth;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        // font-weight: bold;
-
-        &--strong {
-            display: flex;
-        }
+        text-align: center;
     }
 }

@@ -1,9 +1,10 @@
 import './Main.scss'
-import { API_URL, USERNAME, PASSWORD, storesList  } from '../../utils/constants';
+import { storesList, categoryParentNames } from '../../utils/constants';
 import React, { useState, useContext, useEffect } from 'react'
 import logo from '../../assets/logo.png'
 import FiltersForm from '../../components/FiltersForm/FiltersForm'
 import List from '../../components/List/List';
+import AuthModal from '../../components/AuthModal/AuthModal';
 
 import { ProductsContext } from '../../utils/ProductsContext'
 import Loader from '../../components/Loader/Loader';
@@ -29,13 +30,11 @@ function Main () {
 
   const [filteredSalesList, setFilteredSalesList] = useState([]);
 
-  // Encodage des informations en Base64
-  const credentials = btoa(`${USERNAME}:${PASSWORD}`);
+  const { products, brands, categories, loaderDisplay, setLoaderDisplay, credentials, apiUrl, setApiUrl, fetchData, userName, passWord, setUserName, setPassWord, authModalDisplay, textError } = useContext(ProductsContext);
 
-  const { products, brands, categories, loaderDisplay, setLoaderDisplay } = useContext(ProductsContext);
-
-  useEffect(() => {
-    getTags().then(tags => {
+  async function launchRequest() {
+    await fetchData();
+    await getTags().then(tags => {
       let collectionTags = []
       if (tags) {
         let collectionTagsList = tags[1].tag_details
@@ -46,7 +45,7 @@ function Main () {
       }
     })
     setStores (storesList)
-  }, []);
+  }
 
   useEffect(() => {
     calcTotals();
@@ -59,7 +58,7 @@ function Main () {
   // RÉCUPÉRATION DES VENTES POUR UNE JOURNÉE DONNÉE
   async function getSalesByDate(year, month, day, store_id) {
     try {
-      const response = await fetch(`${API_URL}/products_sold/${store_id}/${year}/${month}/${day}`, {
+      const response = await fetch(`${apiUrl}/products_sold/${store_id}/${year}/${month}/${day}`, {
         method: 'GET',
         headers: {
           'Authorization': `Basic ${credentials}`,
@@ -78,21 +77,24 @@ function Main () {
   }
 
   // RÉCUPÉRATION DES VENTES POUR UNE PLUSIEURS DATES
+  
   async function getAllSales(startDate, endDate, store_id) {
     
     let salesList = [];
     
     let currentDate = new Date(startDate);
+    let year = currentDate.getFullYear();
+    let month = currentDate.getMonth() + 1; // Les mois commencent à 0 dans JavaScript
+    let day = currentDate.getDate();
+    
     const end = new Date(endDate);
     
     while (currentDate <= end) {
-      let year = currentDate.getFullYear();
-      let month = currentDate.getMonth() + 1; // Les mois commencent à 0 dans JavaScript
-      let day = currentDate.getDate();
       
       const sales = await getSalesByDate(year, month, day, store_id);
       if (sales) {
-        salesList.push(...sales); // Ajouter les ventes récupérées à la liste
+        salesList.push(...sales);
+         // Ajouter les ventes récupérées à la liste
       }
 
       currentDate.setDate(currentDate.getDate() + 1);
@@ -133,13 +135,20 @@ function Main () {
             const brandName = brand ? brand.brand_name : '';
             
             const category = await categories?.find(category => category.category_id === product.product_category);
-            const categoryName = category ? category.category_name : ''
+            const categoryName = category ? category.category_name : '';
+            const parentCategory = category.category_id_parent;
+            const parentNameCategory = categoryParentNames.find(item => item.id === parentCategory) || '';
+            console.log(parentNameCategory);
+            const parentName = parentNameCategory.name;
+
+
 
             const supplyPrice = parseFloat(product.product_supply_price);
-            console.log(product);
 
             const marge = (roundedHtPrice - supplyPrice).toFixed(2);
-            const margePercent = ((marge/supplyPrice)*100).toFixed(0)
+            const margePercent = ((marge/supplyPrice)*100).toFixed(0);
+
+            
 
             return {
               ...sale,
@@ -148,6 +157,8 @@ function Main () {
               store_name: storeName,
               product_brand: brandName,
               product_category: categoryName,
+              product_category_id_parent: parentCategory,
+              product_category_name_parent: parentName,
               product_supply_priceHt: supplyPrice,
               marge: marge,
               margePercent: margePercent
@@ -159,9 +170,10 @@ function Main () {
         .filter (sale => {
             const tagCondition = collectionTagSelected === 'TOUTES LES SAISONS' || sale.product_tag === collectionTagSelected;
             const brandCondition = brandSelected === 'TOUTES LES MARQUES' || sale.product_brand === brandSelected;
-            const categoriesCondition = categorySelected === 'TOUTES LES CATEGORIES' || sale.product_category.split(' ').includes(categorySelected);
+            const categoriesCondition = categorySelected === 'TOUTES LES CATEGORIES' || sale.product_category_id_parent === parseFloat(categorySelected);
             return tagCondition && brandCondition && categoriesCondition;
           })
+
       setFilteredSalesList(datedFilteredSales);
     } catch (error) {
 
@@ -177,7 +189,7 @@ function Main () {
 
   async function getTags() {
       try {
-      const response = await fetch(`${API_URL}/tags/products`, {
+      const response = await fetch(`${apiUrl}/tags/products`, {
           method: 'GET',
           headers: {
           'Authorization': `Basic ${credentials}`,
@@ -201,7 +213,7 @@ function Main () {
 
   async function getTagsProducts(product_id) {
     try {
-      const response = await fetch(`${API_URL}/products_tags/${product_id}`, {
+      const response = await fetch(`${apiUrl}/products_tags/${product_id}`, {
           method: 'GET',
           headers: {
           'Authorization': `Basic ${credentials}`,
@@ -361,7 +373,13 @@ function Main () {
           loaderDisplay={loaderDisplay} 
           className='loader--translucent'
         />
-
+        <div className={authModalDisplay===true?'main_authModal main_authModal--displayOn':'main_authModal main_authModal--displayOff'}>
+          <AuthModal setPassWord={setPassWord} setUserName={setUserName} setApiUrl={setApiUrl}/>
+          {textError===true &&
+            <p className='main_authModal_textError'><em>Identifiant et/ou clé non valides</em></p>
+          }
+          <button className='main_authModal_button' type="button" onClick={() => launchRequest()} >VALIDER</button>
+        </div>
       </main>
   )
 }

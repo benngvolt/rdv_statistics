@@ -1,2 +1,13 @@
 $colorFirst: rgb(190, 255, 233);
 $colorSecond: rgb(255, 222, 222);
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+$mainWidth: 80%;

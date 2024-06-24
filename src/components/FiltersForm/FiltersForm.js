@@ -1,8 +1,6 @@
 import './FiltersForm.scss'
 import {useRef, useState, useEffect, useContext } from 'react'
 
-// import HomePage from '../../components/HomePage/HomePage'
-
 function FiltersForm ({
 
     setStartDateSelected,
@@ -24,11 +22,10 @@ function FiltersForm ({
     return (
         <form className="form">
             <div className="form_field">
-                <label htmlFor='inputStartDate'>DATE DE DÉBUT</label>
+                <label htmlFor='inputStartDate'>DATE DÉBUT</label>
                 <input
                     type='date'
                     id='inputStartDate'
-                    // value={date.day}
                     onChange={(e) => {
                         const startDate = e.target.value;
                         setStartDateSelected(startDate);
@@ -36,7 +33,7 @@ function FiltersForm ({
                 />
             </div>
             <div className="form_field" >
-                <label htmlFor='inputEndDate'>DATE DE FIN</label>
+                <label htmlFor='inputEndDate'> DATE FIN </label>
                 <input
                     type='date'
                     id='inputEndDate'
@@ -47,7 +44,7 @@ function FiltersForm ({
                 />
             </div>
             <div className="form_field">
-                <label htmlFor='inputStore'>BOUTIQUE</label>
+                <label htmlFor='inputStore'> BOUTIQUE </label>
                 <select id='inputStore' 
                         name="store"
                         value={storeSelected}
@@ -58,7 +55,7 @@ function FiltersForm ({
                 </select>
             </div>
             <div className="form_field">
-                <label htmlFor='inputCollectionTag'>SAISON</label>
+                <label htmlFor='inputCollectionTag'> SAISON </label>
                 <select id='inputCollectionTag' 
                         name="colletionTag"
                         value={collectionTagSelected}
@@ -88,8 +85,11 @@ function FiltersForm ({
                         value={categorySelected}
                         onChange={(e) => setCategorySelected(e.target.value)}>
                     <option key='toutes' value='TOUTES LES CATEGORIES'>TOUTES LES CATEGORIES</option>
-                    <option key='men' value='MEN'>MEN</option>
-                    <option key='women' value='WOMEN'>WOMEN</option>
+                    <option key='men' value='33'>MEN</option>
+                    <option key='women' value='56'>WOMEN</option>
+                    <option key='shippingFees' value='59'>SHIPPING FEES</option>
+                    <option key='fragrance' value='20'>FRAGRANCES</option>
+                    <option key='everydayGoods' value='16'>EVERYDAY GOODS</option>
                 </select>
             </div>
         </form>

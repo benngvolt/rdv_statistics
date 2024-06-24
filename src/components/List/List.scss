@@ -1,7 +1,7 @@
 @import '../../utils/mixins';
 
 .salesList {
-    width: 70%;
+    width: $mainWidth;
     display: flex;
     flex-direction: column;
     height: 100%;
