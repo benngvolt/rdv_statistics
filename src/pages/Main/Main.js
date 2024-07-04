@@ -114,7 +114,7 @@ function Main () {
         sales
           .filter(sale => sale.product_price !== '0.00')
           .map(async sale => {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 700));
             const htPrice = parseFloat(sale.product_price) / (1 + parseFloat(sale.vat));
             const roundedHtPrice = htPrice.toFixed(2);
             const saleTag = await getTagsProducts(sale.product_id);
@@ -139,7 +139,7 @@ function Main () {
             const parentName = parentNameCategory?.name || '';
             const supplyPrice = parseFloat(product?.product_supply_price) || 0;
             const marge = (roundedHtPrice - supplyPrice).toFixed(2);
-            const margePercent = ((marge/supplyPrice)*100).toFixed(0);
+            const margePercent = ((marge/roundedHtPrice)*100).toFixed(0);
 
             
 
