@@ -14,7 +14,7 @@ function Main () {
   const { products, brands, categories, loaderDisplay, setLoaderDisplay, credentials, apiUrl, setApiUrl, fetchData, setUserName, setPassWord, authModalDisplay, textError } = useContext(ProductsContext);
   const [collectionTagSelected, setCollectionTagSelected] = useState('TOUTES LES SAISONS');
   const [brandSelected, setBrandSelected] = useState('TOUTES LES MARQUES');
-  const [storeSelected, setStoreSelected] = useState(0);
+  const [storeSelected, setStoreSelected] = useState('0');
   const [startDateSelected, setStartDateSelected] = useState('');
   const [endDateSelected, setEndDateSelected] = useState('');
   const [categorySelected, setCategorySelected] = useState('TOUTES LES CATEGORIES');
@@ -40,19 +40,31 @@ function Main () {
   const store_id = storeSelected;
 
   const filterBrands = function() {
-    try {   
-      const datedFilteredSales = finalFilteredSalesList
-        .filter(sale => sale.product_price !== '0.00')
-        .filter(sale => storeSelected === '0' || sale.store_id === parseFloat(storeSelected))
-        .filter(sale => collectionTagSelected === 'TOUTES LES SAISONS' || sale.product_tag === collectionTagSelected)
-        .filter(sale => categorySelected === 'TOUTES LES CATEGORIES' || sale.product_category_id_parent === parseFloat(categorySelected));
-  
-      const filterBrandsUpdated = brands.filter(brand => 
-        datedFilteredSales.some(sale => sale.product_brand === brand.brand_name)
-      );
-      return filterBrandsUpdated;
-    } catch (error) {
-      console.error('Erreur lors de la génération de la liste filtrée des ventes :', error);
+    if (categorySelected === 'TOUTES LES CATEGORIES' && collectionTagSelected === 'TOUTES LES SAISONS' && storeSelected === '0' && brandSelected === 'TOUTES LES MARQUES') {
+        console.log(categorySelected)
+        console.log(collectionTagSelected)
+        console.log(storeSelected)
+        console.log(brandSelected)
+        console.log("cas1")
+        const filterBrandsUpdated = brands.filter(brand => 
+        finalFilteredSalesList.some(sale => sale.product_brand === brand.brand_name)
+        );
+        return filterBrandsUpdated;
+    } else {
+      console.log("cas2")
+      try {   
+        const datedFilteredSales = finalFilteredSalesList
+          .filter(sale => storeSelected === '0' || sale.store_id === parseFloat(storeSelected))
+          .filter(sale => collectionTagSelected === 'TOUTES LES SAISONS' || sale.product_tag === collectionTagSelected)
+          .filter(sale => categorySelected === 'TOUTES LES CATEGORIES' || sale.product_category_id_parent === parseFloat(categorySelected));
+    
+        const filterBrandsUpdated = brands.filter(brand => 
+          datedFilteredSales.some(sale => sale.product_brand === brand.brand_name)
+        );
+        return filterBrandsUpdated;
+        } catch (error) {
+          console.error('Erreur lors de la génération de la liste filtrée des ventes :', error);
+        }
     }
   }
 
