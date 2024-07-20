@@ -9,10 +9,43 @@
     justify-content: space-between;
     column-gap: 30px;
 
+    &--dates {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin: 100px auto 30px auto;
+    }
+
     &_field {
         width: 20%;
         display: flex;
         flex-direction: column;
+
+        &--dates {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 35px;
+            
+            label {
+                
+                width: 20%;
+                margin: 0 auto 15px auto;
+            }
+    
+            input, select{
+                margin: auto;
+                width: 20%;
+                border: none;
+                background-color: $colorSecond;
+                height: 25px;
+                &:hover {
+                    cursor: pointer;
+                    background-color: $colorFirst;
+                }
+            }
+        }
 
         label {
             margin-bottom: 15px;

@@ -8,7 +8,7 @@
     overflow: scroll;
     margin: 45px auto;
     list-style-type: none;
-
+    
     &_item {
         width: 100%;
         display: flex;
@@ -18,11 +18,27 @@
 
         &--bold {
             font-weight: bold;
+            position: -webkit-sticky; /* Pour la prise en charge de WebKit (Safari, Chrome) */
+            position: sticky;
+            top: 0px;
+            
+
+            p {
+                &:hover {
+                    cursor: pointer;
+                    color: $colorSecond;
+                }
+            }
         }
 
         p {
             font-size: 12px;
             width: 8%;
+            
         }
     }
+}
+.button--icon {
+    font-size: 13px;
+    margin-left: 6px;
 }

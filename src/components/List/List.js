@@ -1,5 +1,9 @@
 import './List.scss'
 import {useRef, useState, useEffect, useContext } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+    faSort
+} from '@fortawesome/free-solid-svg-icons'
 
 function List ({
     salesList}) 
@@ -7,6 +11,11 @@ function List ({
     
     const [sortedList, setSortedList] = useState(salesList)
     const [isSaleDescending, setIsSaleDescending] = useState(false)
+
+    useEffect(() => {
+        setSortedList(salesList);
+    }, [salesList]);
+
  
 
     async function sortSaleId() {
@@ -92,24 +101,24 @@ function List ({
     return (
         <ul className='salesList'>
             <li className='salesList_item salesList_item--bold'> 
-                <p type='button' onClick={() => sortSaleId()}>ID VENTE</p>
-                <p type='button' onClick={() => sortDate()}>DATE</p>
-                <p type='button' onClick={() => sortProductId()}>ID PRODUIT</p>
-                <p>QUANTITÉ</p>
-                <p>PRIX D'ACHAT HT</p>
-                <p type='button' onClick={() => sortPriceTtc()}>PRIX DE VENTE TTC</p>
-                <p type='button' onClick={() => sortPriceHt()}>PRIX DE VENTE HT</p>
+                <p type='button' onClick={() => sortSaleId()}>ID VENTE<span><FontAwesomeIcon icon={faSort} className='button--icon'/></span></p>
+                <p type='button' onClick={() => sortDate()}>DATE<span><FontAwesomeIcon icon={faSort} className='button--icon'/></span></p>
+                <p type='button' onClick={() => sortProductId()}>ID PRODUIT<span><FontAwesomeIcon icon={faSort} className='button--icon'/></span></p>
+                <p>QTÉ</p>
+                <p>PRIX ACHAT HT</p>
+                <p type='button' onClick={() => sortPriceTtc()}>PRIX VENTE TTC<span><FontAwesomeIcon icon={faSort} className='button--icon'/></span></p>
+                <p type='button' onClick={() => sortPriceHt()}>PRIX VENTE HT<span><FontAwesomeIcon icon={faSort} className='button--icon'/></span></p>
                 <p>REMISE</p>
-                <p>MARGE</p>
+                <p>MARGE €</p>
                 <p>MARGE %</p>
-                <p type='button' onClick={() => sortTag()}>COLLECTION</p>
+                <p type='button' onClick={() => sortTag()}>COLLECTION<span><FontAwesomeIcon icon={faSort} className='button--icon'/></span></p>
                 <p>BOUTIQUE</p>
-                <p type='button' onClick={() => sortBrand()}>MARQUE</p>
+                <p type='button'onClick={() => sortBrand()}>MARQUE<span><FontAwesomeIcon icon={faSort} className='button--icon'/></span></p>
                 <p>CATEGORIE PARENTE</p>
-                <p type='button' onClick={() => sortCategory()}>CATEGORIE</p>
+                <p type='button' onClick={() => sortCategory()}>CATEGORIE<span><FontAwesomeIcon icon={faSort} className='button--icon'/></span></p>
             </li>
-          {sortedList?.map((sale) => 
-            <li className='salesList_item'> 
+          {sortedList?.map((sale, index) => 
+            <li key={`${sale.product_id}-${sale.sale_id}-${index}`} className='salesList_item'> 
                 <p>{sale.sale_id}</p>
                 <p>{sale.sale_date}</p>
                 <p>{sale.product_id}</p>
