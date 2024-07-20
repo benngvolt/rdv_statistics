@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/rdv_statistics/static/css/main.1e4f8b02.css",
-    "main.js": "/rdv_statistics/static/js/main.1064ee97.js",
+    "main.js": "/rdv_statistics/static/js/main.82b3c817.js",
     "static/js/453.8ab44547.chunk.js": "/rdv_statistics/static/js/453.8ab44547.chunk.js",
     "static/media/logo.png": "/rdv_statistics/static/media/logo.8c1115e699a8c4299ffd.png",
     "index.html": "/rdv_statistics/index.html",
     "main.1e4f8b02.css.map": "/rdv_statistics/static/css/main.1e4f8b02.css.map",
-    "main.1064ee97.js.map": "/rdv_statistics/static/js/main.1064ee97.js.map",
+    "main.82b3c817.js.map": "/rdv_statistics/static/js/main.82b3c817.js.map",
     "453.8ab44547.chunk.js.map": "/rdv_statistics/static/js/453.8ab44547.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1e4f8b02.css",
-    "static/js/main.1064ee97.js"
+    "static/js/main.82b3c817.js"
   ]
 }
